@@ -8,13 +8,17 @@ services:
       dockerfile: Dockerfile
       args: 
         WORK_DIR: /var/www/app
-    ports:
-      - 3000:3000
     environment:
       - NODE_ENV=production
       - PORT=3000
+      - REDIS_HOST=redis
+      - REDIS_USER=
+      - REDIS_PASS=
+      - REDIS_PORT=6379
     depends_on:
       - redis
+    ports:
+      - 9220:9229
 
   redis:
     image: redis:5.0.5-buster

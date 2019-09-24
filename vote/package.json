@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node --harmony index.js",
+    "start": "nodemon --exec 'npm run debug'",
+    "start:dev": "node --harmony index.js",
     "debug": "node --inspect=9229 --harmony index.js",
     "prof": "node --prof --harmony index.js",
     "prof:json": "node --prof-process isolate*.log > v8.json",
-    "watch": "nodemon --exec 'npm run start'"
+    "watch": "nodemon --exec 'npm run debug'"
   },
   "author": "mahdi imani",
   "license": "ISC",

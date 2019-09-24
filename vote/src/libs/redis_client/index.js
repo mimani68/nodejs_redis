@@ -11,23 +11,23 @@ async function client( ) {
  * @version 0.0.1
  */
 function getOptions() {
-    return require('../../config/app').config.redis;
+    var { host, port } = require('../../config/app').config.redis;
+    return { host, port }
 }
 /**
  * @returns void
  * @version 0.0.1
  */
-function Init(next) {
+function Init(nextFunction) {
     var client = require("redis").createClient( getOptions() );
+    console.log(client.get('com:app:comment:vote:12'));
 
-    next();
-    
-    // client.info(function (err, reply) {
-    //     console.log('[INFO] ',  err );
-    // });
+    client.info(function (err, reply) {
+        if ( reply )
+            nextFunction();
+    });
 
     client.on("error", function (err) {
-    // await client( option ).on("error", function (err) {
         console.log("Error " + err);
     });
 }
@@ -38,7 +38,7 @@ function Init(next) {
  */
 async function getValue( label ) {
     const client = require("redis").createClient(getOptions());
-    client.get(label);
+    return client.get(label);
     // client( ).get(label);
 }
 
