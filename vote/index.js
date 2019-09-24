@@ -35,12 +35,12 @@ app.get(['/vote/:comment_id'], (req, res, next)=>{
     })
 })
 
-app.post(['/vote/:comment_id/plus'], (req, res, next)=>{
+app.post([
+        '/vote/:comment_id/incr',
+    ], (req, res, next)=>{
     try {
         var comment_id = !Number.isInteger(req.params.comment_id) ? +req.params.comment_id : null;
-        comment_id = req.params.comment_id;
-        var number = Number.isInteger(req.body.number) ? +req.body.number : null;
-        if ( comment_id && number ) {
+        if ( comment_id ) {
             increseCommentRate(comment_id).then( result => {
                 res.status(201).send( result )
             }).catch( error => {
@@ -55,22 +55,28 @@ app.post(['/vote/:comment_id/plus'], (req, res, next)=>{
     } catch (err) {
         res.status(500).end();
         console.log(err);
-
     }
 })
-
-app.post(['/vote/:comment_id/-'], (req, res, next)=>{
-    var comment_id = !Number.isInteger(req.params.comment_id) ? +req.params.comment_id : null;
-    var number = !Number.isInteger(req.body.number) ? +req.body.number : null;
-    if ( comment_id && number ) {
-        decreseCommentRate(comment_id).then( result => {
-            res.status(201).json( result )
-        }).catch( error => {
-            res.status(400).json({
-                error,
-                success: false
+app.post([
+        '/vote/:comment_id/dcr'
+    ], (req, res, next)=>{
+    try {
+        var comment_id = !Number.isInteger(req.params.comment_id) ? +req.params.comment_id : null;
+        if ( comment_id ) {
+            decreseCommentRate(comment_id).then( result => {
+                res.status(201).send( result )
+            }).catch( error => {
+                res.status(401).json({
+                    error,
+                    success: false
+                })
             })
-        })
+        } else {
+            res.status(400).end();
+        }
+    } catch (err) {
+        res.status(500).end();
+        console.log(err);
     }
 })
 
