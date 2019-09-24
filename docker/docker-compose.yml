@@ -1,0 +1,21 @@
+version: '3.5'
+
+services:
+
+  vote:
+    build: 
+      context: ../vote
+      dockerfile: Dockerfile
+      args: 
+        WORK_DIR: /var/www/app
+    ports:
+      - 3000:3000
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:5.0.5-buster
+    restart: always

@@ -1,0 +1,33 @@
+# 
+# for DevOps
+# 
+# docker-compose -f docker-compose.yml -f docker-compose.admin.yml run 
+version: '3.5'
+
+services:
+
+  systemMonitoring:
+    image: google/cadvisor:latest
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /dev/disk/:/dev/disk:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /sys:/sys:ro
+    ports: 
+      - 8080:8080
+
+  # redisMonitoring:
+  #   build: database_admin/
+  #   links:
+  #     - db
+
+  container_visualizer:
+    image: dockersamples/visualizer
+    volumes: 
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 8082:8080
+
+  
+
