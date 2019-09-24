@@ -17,11 +17,6 @@ services:
     ports: 
       - 8080:8080
 
-  # redisMonitoring:
-  #   build: database_admin/
-  #   links:
-  #     - db
-
   container_visualizer:
     image: dockersamples/visualizer
     volumes: 
