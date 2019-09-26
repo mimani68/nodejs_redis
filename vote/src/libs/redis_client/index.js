@@ -1,3 +1,5 @@
+const { promisify } = require('util');
+
 /**
  * @returns RedisClientOptions
  * @version 0.0.1
@@ -35,19 +37,23 @@ function Init(nextFunction) {
 /**
  * 
  * @param { string } label
+ * @returns Promise<any>
  */
 async function getValue( label ) {
     let result = new Promise((resolve, reject)=>{
         client().get(label, (err, reply)=>{
             reply ? resolve(reply) : reject(err)
-            // process.nextTick(function () {
-            //     // Force closing the connection while the command did not yet return
-            //     client.end(true);
-            //     redis.debug_mode = false;
-            // });
+            client().end(true);
         });
     })
     return await result;
+}
+
+/**
+ * 
+ */
+async function getAsync( ) {
+    return promisify(client().get).bind(client());
 }
 
 /**
@@ -60,14 +66,23 @@ async function changeValue( label, value ) {
         if ( +value >= 1 ) {
             client().incr(label, (err, reply)=>{
                 reply ? resolve(reply) : reject(err)
+                client().end(true);
             });
         } else {
             client().decr(label, (err, reply)=>{
                 reply ? resolve(reply) : reject(err)
+                client().end(true);
             });
         }
     })
     return await result;
+}
+
+/**
+ * 
+ */
+async function setAsync(  ) {
+    return promisify(client().set).bind(client());
 }
 
 /**
@@ -78,9 +93,18 @@ async function deleteValue( label ) {
     let result = new Promise((resolve, reject)=>{
         client().set(label, null, 'EX', 1, (err, reply)=>{
             reply ? resolve(reply) : reject(err)
+            client().end(true);
         });
     })
     return await result;
 }
 
-module.exports = { getValue, changeValue, Init, deleteValue, client }
+
+/**
+ * 
+ */
+async function keysAsync() {
+    return promisify(client.keys).bind(client)
+}
+
+module.exports = { client, Init, getValue, changeValue, deleteValue, setAsync, keysAsync, getAsync }
